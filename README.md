@@ -116,8 +116,12 @@ CREATE TABLE IF NOT EXISTS stock_dwd (
 %flink.ssql(type=update)
 select * from stock_ods
 
+# Set Checkpoint
+%flink
+senv.enableCheckpointing(3000)
+
 # Insert data
-%flink.ssql(type=update)
+%flink.ssql(type=update,parallelism=2)
 INSERT INTO stock_dwd
   SELECT EVENT_TIME, TICKER, PRICE
     FROM stock_ods;
